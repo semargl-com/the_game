@@ -1,9 +1,9 @@
 package com.thegame.model.weapon;
 
 import com.thegame.model.base.Coord;
-import com.thegame.model.monster.Monster;
+import com.thegame.model.enemy.Enemy;
 import com.thegame.model.base.Direction;
-import com.thegame.model.monster.MonsterState;
+import com.thegame.model.enemy.EnemyState;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class Weapon {
     public Coord coord;
     public Direction direction;
     public WeaponSpec spec;
-    public Monster targetMonster;
+    public Enemy targetEnemy;
     public long actingTime;
     public double progress;
 
@@ -31,7 +31,7 @@ public class Weapon {
         spec = weaponClass.weaponSpecs.get(0);
     }
 
-    public void go(long duration, List<Monster> monsters) {
+    public void go(long duration, List<Enemy> enemies) {
         actingTime += duration;
         if (weaponState == WeaponState.Building) {
             if (actingTime >= BUILD_TIME) {
@@ -43,9 +43,9 @@ public class Weapon {
             }
         }
         else if (weaponState == WeaponState.Ready) {
-            targetMonster = findMonster(monsters);
-            if (targetMonster != null) {
-                if (direction.almostEquals(coord, targetMonster.coord)) {
+            targetEnemy = findMonster(enemies);
+            if (targetEnemy != null) {
+                if (direction.almostEquals(coord, targetEnemy.coord)) {
                     weaponState = WeaponState.Firing;
                 } else {
                     weaponState = WeaponState.Aiming;
@@ -55,28 +55,28 @@ public class Weapon {
         }
         else if (weaponState == WeaponState.Aiming) {
             double angleStep = spec.rotationSpeed * actingTime / 1000;
-            direction.rotate(coord.angle(targetMonster.coord), angleStep);
-            if (direction.almostEquals(coord, targetMonster.coord)) {
+            direction.rotate(coord.angle(targetEnemy.coord), angleStep);
+            if (direction.almostEquals(coord, targetEnemy.coord)) {
                 weaponState = WeaponState.Firing;
             }
             actingTime = 0;
         }
         else if (weaponState == WeaponState.Firing) {
             if (spec.bulletSpeed == 0) {
-                targetMonster.hit(spec.power);
+                targetEnemy.hit(spec.power);
                 weaponState = WeaponState.Recharging;
                 actingTime = 0;
             }
-            direction.angle = coord.angle(targetMonster.coord);
+            direction.angle = coord.angle(targetEnemy.coord);
         }
         else if (weaponState == WeaponState.Recharging) {
-            if (checkMonster(targetMonster)) {
+            if (checkMonster(targetEnemy)) {
                 if (actingTime >= spec.rechargeTime) {
                     weaponState = WeaponState.Firing;
                 } else {
                     progress = actingTime / spec.rechargeTime;
                 }
-                direction.angle = coord.angle(targetMonster.coord);
+                direction.angle = coord.angle(targetEnemy.coord);
             }
             else {
                 if (actingTime >= spec.rechargeTime) {
@@ -95,23 +95,23 @@ public class Weapon {
         spec = weaponClass.weaponSpecs.get(level);
     }
 
-    private Monster findMonster(List<Monster> monsters) {
-        for (Monster monster : monsters) {
-            if (checkMonster(monster) && weaponClass.attackMonsterTypes.contains(monster.monsterClass.type)) {
-                return monster;
+    private Enemy findMonster(List<Enemy> enemies) {
+        for (Enemy enemy : enemies) {
+            if (checkMonster(enemy) && weaponClass.attackEnemyTypes.contains(enemy.enemyClass.type)) {
+                return enemy;
             }
         }
         return null;
     }
 
-    private boolean checkMonster(Monster monster) {
-        return monster != null && coord.distance(monster.coord) < spec.distance &&
-            (monster.monsterState != MonsterState.Dying && monster.monsterState != MonsterState.Dead);
+    private boolean checkMonster(Enemy enemy) {
+        return enemy != null && coord.distance(enemy.coord) < spec.distance &&
+            (enemy.enemyState != EnemyState.Dying && enemy.enemyState != EnemyState.Dead);
     }
 
     @Override
     public String toString() {
-        return "(" + weaponClass.name + "/" + weaponState + "/" + coord + direction + "/attacking:" + targetMonster + ")";
+        return "(" + weaponClass.name + "/" + weaponState + "/" + coord + direction + "/attacking:" + targetEnemy + ")";
     }
 
 }

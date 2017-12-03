@@ -1,20 +1,20 @@
 package com.thegame.model.wave;
 
-import com.thegame.model.monster.MonsterClass;
-import com.thegame.model.monster.MonsterPath;
+import com.thegame.model.enemy.EnemyClass;
+import com.thegame.model.enemy.EnemyPath;
 
 import java.util.List;
 
 public class WaveClass {
 
-    public MonsterPath monsterPath;
-    public List<MonsterClass> monsterClasses;
+    public EnemyPath enemyPath;
+    public List<EnemyClass> enemyClasses;
     public List<Long> pauses;
 
-    public WaveClass(MonsterPath monsterPath, List<MonsterClass> monsterClasses, List<Long> pauses) {
-        assert monsterClasses.size() == pauses.size();
-        this.monsterPath = monsterPath;
-        this.monsterClasses = monsterClasses;
+    public WaveClass(EnemyPath enemyPath, List<EnemyClass> enemyClasses, List<Long> pauses) {
+        assert enemyClasses.size() == pauses.size();
+        this.enemyPath = enemyPath;
+        this.enemyClasses = enemyClasses;
         this.pauses = pauses;
     }
 }

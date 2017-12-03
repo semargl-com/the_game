@@ -1,10 +1,10 @@
 package com.thegame.model;
 
+import com.thegame.model.enemy.Enemy;
 import com.thegame.util.Log;
 import com.thegame.model.base.Coord;
-import com.thegame.model.monster.Monster;
-import com.thegame.model.monster.MonsterClass;
-import com.thegame.model.monster.MonsterState;
+import com.thegame.model.enemy.EnemyClass;
+import com.thegame.model.enemy.EnemyState;
 import com.thegame.model.wave.Wave;
 import com.thegame.model.weapon.Weapon;
 
@@ -28,7 +28,7 @@ public class State {
 
     public Wave wave;
     public Map<Coord, Weapon> weapons = new ConcurrentHashMap<>();
-    public List<Monster> monsters = new CopyOnWriteArrayList<>();
+    public List<Enemy> enemies = new CopyOnWriteArrayList<>();
 
     public State(Location location, int difficultyLevel) {
         this.location = location;
@@ -45,13 +45,13 @@ public class State {
 
         for (Coord weaponCoord : weapons.keySet()) {
             Weapon weapon = weapons.get(weaponCoord);
-            weapon.go(duration, monsters);
+            weapon.go(duration, enemies);
         }
 
-        for (Monster monster : monsters) {
-            monster.go(duration);
-            if (monster.monsterState == MonsterState.Dead)
-                monsters.remove(monster);
+        for (Enemy enemy : enemies) {
+            enemy.go(duration);
+            if (enemy.enemyState == EnemyState.Dead)
+                enemies.remove(enemy);
         }
 
         checkIsFinished();
@@ -89,12 +89,12 @@ public class State {
 
     private void pushNextMonster() {
         wave.lastMonsterNumber++;
-        MonsterClass monsterClass = wave.waveClass.monsterClasses.get(wave.lastMonsterNumber);
-//        Coord coord = wave.waveClass.monsterPath.segment.get(0);
-//        Coord nextSegmentCoord = wave.waveClass.monsterPath.segment.get(1);
+        EnemyClass enemyClass = wave.waveClass.enemyClasses.get(wave.lastMonsterNumber);
+//        Coord coord = wave.waveClass.enemyPath.segment.get(0);
+//        Coord nextSegmentCoord = wave.waveClass.enemyPath.segment.get(1);
 //        Direction direction = new Direction(coord, nextSegmentCoord);
-        Monster newMonster = new Monster(monsterClass, wave.waveClass.monsterPath, difficultyLevel);
-        monsters.add(newMonster);
+        Enemy newEnemy = new Enemy(enemyClass, wave.waveClass.enemyPath, difficultyLevel);
+        enemies.add(newEnemy);
         wave.lastMonsterTime = currTime;
     }
 
@@ -103,8 +103,8 @@ public class State {
             Log.debug("Finished. health = " + health);
             finished = true;
         }
-        else if (isLastWave() && monsters.size() == 0 && isLastMonsterInWavePushed()) {
-            Log.debug("Finished. monsters.size = " + monsters.size());
+        else if (isLastWave() && enemies.size() == 0 && isLastMonsterInWavePushed()) {
+            Log.debug("Finished. enemies.size = " + enemies.size());
             finished = true;
             victory = true;
         }
@@ -115,6 +115,6 @@ public class State {
     }
 
     private boolean isLastMonsterInWavePushed() {
-        return wave.lastMonsterNumber == wave.waveClass.monsterClasses.size() - 1;
+        return wave.lastMonsterNumber == wave.waveClass.enemyClasses.size() - 1;
     }
 }

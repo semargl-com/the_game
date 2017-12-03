@@ -1,9 +1,9 @@
 package com.thegame.model;
 
 import com.thegame.model.base.Coord;
-import com.thegame.model.monster.MonsterClass;
-import com.thegame.model.monster.MonsterPath;
-import com.thegame.model.monster.MonsterType;
+import com.thegame.model.enemy.EnemyClass;
+import com.thegame.model.enemy.EnemyPath;
+import com.thegame.model.enemy.EnemyType;
 import com.thegame.model.wave.LevelWaves;
 import com.thegame.model.wave.WaveClass;
 import com.thegame.model.weapon.Weapon;
@@ -38,17 +38,17 @@ public class Model {
                 new Coord(56, 103), new Coord(172, 103), new Coord(382, 103),
                 new Coord(264, 207), new Coord(200, 260), new Coord(164, 332),
                 new Coord(266, 394), new Coord(412, 326));
-        location.monsterPaths = Arrays.asList(new MonsterPath(Arrays.asList(
+        location.enemyPaths = Arrays.asList(new EnemyPath(Arrays.asList(
                 new Coord(0, 33), new Coord(237, 33), new Coord(279, 75),
                 new Coord(277, 118), new Coord(92, 332), new Coord(92, 380),
                 new Coord(959, 467), new Coord(368, 395), new Coord(300, 300),
                 new Coord(400, 170), new Coord(499, 170))),
                 null);
         location.levelWaves = Arrays.asList(new LevelWaves(Arrays.asList(
-                new WaveClass(location.monsterPaths.get(0),
+                new WaveClass(location.enemyPaths.get(0),
                         Arrays.asList(MONSTER_ZOMBIE, MONSTER_ZOMBIE, MONSTER_ZOMBIE),
                         Arrays.asList(3000L, 3000L, 5000L)),
-                new WaveClass(location.monsterPaths.get(0),
+                new WaveClass(location.enemyPaths.get(0),
                         Arrays.asList(MONSTER_ZOMBIE, MONSTER_ZOMBIE, MONSTER_ZOMBIE, MONSTER_ZOMBIE, MONSTER_ZOMBIE),
                         Arrays.asList(1000L, 1000L, 2000L, 1000L, 5000L))
         )), null);
@@ -56,14 +56,14 @@ public class Model {
         return location;
     }
 
-    public static MonsterClass MONSTER_ZOMBIE = new MonsterClass(
+    public static EnemyClass MONSTER_ZOMBIE = new EnemyClass(
             Arrays.asList(50, 60, 75, 85, 100),
-            MonsterType.Land,
+            EnemyType.Land,
             1000,
             "Zombie");
 
     public static WeaponClass WEAPON_MACHINEGUN = new WeaponClass(
-            new HashSet<>(Arrays.asList(MonsterType.Land, MonsterType.Flying)),
+            new HashSet<>(Arrays.asList(EnemyType.Land, EnemyType.Flying)),
             Arrays.asList(
                     new WeaponSpec(200, 3, 150, 150, 0, 0, 3.14),
                     new WeaponSpec(40, 3, 200, 175, 0, 0, 3.14),

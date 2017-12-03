@@ -1,15 +1,15 @@
-package com.thegame.model.monster;
+package com.thegame.model.enemy;
 
 import com.thegame.model.base.Coord;
 import com.thegame.model.base.Direction;
 
 import java.util.List;
 
-public class MonsterPath {
+public class EnemyPath {
 
     public List<Coord> segment;
 
-    public MonsterPath(List<Coord> segment) {
+    public EnemyPath(List<Coord> segment) {
         this.segment = segment;
     }
 
