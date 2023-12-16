@@ -27,5 +27,7 @@ public class Main {
             }
         } while(!model.state.finished);
         Log.debug(model.state.victory ? "You win" : "You lose");
+
+        // another commit
     }
 }
