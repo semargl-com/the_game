@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         game();
-        /* hi there */
+        /* hi there two*/
     }
 
     public static void game() {
